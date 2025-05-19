@@ -18,6 +18,8 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Image as RLImage, T
 from reportlab.lib import colors
 import os
 import cv2
+import os
+genai.configure(api_key=os.getenv("API_KEY"))
 
 # Initialize Flask App
 app = Flask(__name__)
