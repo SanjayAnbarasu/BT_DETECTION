@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Detection</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+     <script>
+        function displayRawImage(event) {
+            const file = event.target.files[0];
+            const rawImage = document.getElementById("rawImage");
+            const uploadText = document.getElementById("uploadText");
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    rawImage.src = e.target.result;
+                    rawImage.style.display = "block"; // Show the image
+                    uploadText.style.display = "none"; // Hide the text
+                };
+                reader.readAsDataURL(file);
+            } else {
+                rawImage.style.display = "none"; // Hide image if no file is selected
+                uploadText.style.display = "block"; // Show the text
+            }
+        }
+
+
+        function openCameraDialog() {
+            document.getElementById("cameraDialog").style.display = "block";
+            const video = document.getElementById("cameraFeed");
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.play();
+                    window.cameraStream = stream;
+                })
+                .catch(err => {
+                    console.error("Error accessing camera: ", err);
+                    alert("Failed to access camera");
+                });
+        }
+
+        let capturedImageData = ""; // Store captured image data globally
+
+        function captureImage() {
+    const video = document.getElementById("cameraFeed");
+    const canvas = document.createElement("canvas");
+    
+    // Set the canvas size to a lower resolution, e.g., 240x240 (or any size you prefer)
+    canvas.width = 240;
+    canvas.height = 240;
+    
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const rawImage = document.getElementById("rawImage");
+    capturedImageData = canvas.toDataURL("image/png"); // This base64 data is now smaller
+    rawImage.src = capturedImageData;
+    rawImage.style.display = "block";
+    document.getElementById("uploadText").style.display = "none";
+    
+    document.getElementById("cameraDialog").style.display = "none";
+    stopCamera();
+}
+
+
+
+        function stopCamera() {
+            if (window.cameraStream) {
+                let tracks = window.cameraStream.getTracks();
+                tracks.forEach(track => track.stop());
+            }
+        }
+
+        function submitCapturedImage(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const fileInput = document.getElementById("fileInput");
+        const form = document.querySelector("form");
+        
+        // If no file is uploaded, use the captured image
+        if (!fileInput.files.length && capturedImageData) {
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "captured_image";
+            hiddenInput.value = capturedImageData;
+            form.appendChild(hiddenInput);
+        }
+        
+        showLoading();
+        form.submit(); // Submit the form
+    }
+
+        
+        function showLoading() {
+            document.getElementById("loadingDialog").style.display = "block";
+        }
+   
+        document.addEventListener("DOMContentLoaded", function () {
+            let prediction = "{{ prediction }}";
+            const bottomSection = document.querySelector(".columns");
+    
+            if (!prediction || prediction === "None" || prediction === "No Tumor") {
+               bottomSection.style.display = "none"; // Hide the bottom section
+              } else {
+            bottomSection.style.display = "flex"; // Show the bottom section
+            getDiseaseInfo(prediction);
+}
+
+        });
+    
+        function getDiseaseInfo(diseaseName) {
+            if (!diseaseName) return;
+            
+            document.getElementById("loadingDialog").style.display = "block";
+
+            fetch("/get_disease_info", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ disease: diseaseName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received Data:", data);
+                document.getElementById("loadingDialog").style.display = "none";
+                
+                if (data.error) {
+                    alert("Error: " + data.error);
+                } else {
+                    document.getElementById("definition").innerText = data.Definition || "No definition available";
+                    document.getElementById("causes").innerHTML = data.Causes?.map(c => `<li>${c}</li>`).join("") || "<li>No causes found</li>";
+                    document.getElementById("controls").innerHTML = data.Controls?.map(c => `<li>${c}</li>`).join("") || "<li>No controls found</li>";
+                    document.getElementById("treatments").innerHTML = data.Treatments?.map(t => `<li>${t}</li>`).join("") || "<li>No treatments found</li>";
+                }
+            })
+            .catch(error => {
+                console.error("Fetch Error:", error);
+                document.getElementById("loadingDialog").style.display = "none";
+                alert("Failed to fetch data!");
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let prediction = "{{ prediction }}";
+            if (prediction && prediction !== "None") {
+                getDiseaseInfo(prediction);
+            }
+        });
+
+
+        
+
+    </script>
+    
+</head>
+<body>
+    
+ <div class="blink"><h1>Brain Tumor Detection</h1>
+ </div>
+ 
+<p id="subtitle" >AI DRIVEN TECHNOLOGY SOFTWARE SYSTEM</p>
+    <!-- Top Section -->
+    <div class="container">
+        <!-- Left Side (Brain Tumor Detection) -->
+        <div class="left-section">
+    
+            <form action="/" method="post" enctype="multipart/form-data" onsubmit="submitCapturedImage(event); showLoading()">
+
+                <div class="Maincontainer">
+                    <!-- Upload & Raw Image Section -->
+                    <div class="section">
+                    
+
+
+                        <div class="box">
+                            <label for="fileInput"></label>
+                            {% if raw_image %}
+                                <img id="rawImage" src="data:image/png;base64,{{ raw_image }}" style="display: block;">
+                                <p id="uploadText" class="prediction-container" style="display: none;">Pick the MRI image</p>
+                            {% else %}
+                                <img id="rawImage" src="" style="display: none;">
+                                <p id="uploadText" class="prediction-container">Pick the MRI image</p>
+                            {% endif %}
+                        </div>
+                        <!-- Input Container for Upload Controls (Camera & Choose Image) -->
+                        <div class="input-container">
+                            <button type="button" class="camera-btn" onclick="openCameraDialog()">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                            <label for="fileInput" class="custom-file-label">
+                                Choose Image
+                                <input type="file" name="file" id="fileInput" accept="image/*" onchange="displayRawImage(event)">
+                            </label>
+                        </div>
+                    </div>
+                
+                    <!-- Result Image & Prediction Section -->
+                    <div class="section">
+                        
+                        <div class="box">
+                            {% if result_image %}
+                                <img src="data:image/png;base64,{{ result_image }}" id="resultImage" style="display: block;">
+                            {% else %}
+                                <p id="uploadText" class="prediction-container">Result will be displayed here</p>
+                            {% endif %}
+                        </div>
+                        <!-- Input Container for Processing Controls (Scan & Download) -->
+                        <div class="input-container">
+                            <input type="submit" value="Scan MRI Image" class="submit-btn">
+                            {% if result_filename %}
+                              <a href="{{ url_for('download_processed_image', filename=result_filename, label=prediction) }}" 
+                                   download class="download-button">
+                                    Download <i class="fas fa-download"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+               
+            </form>
+             <!-- Loading Dialog -->
+    <div id="loadingDialog">
+        <div class="dialog-content">
+            <div class="loader"></div>
+            <p>Processing Image please wait a moment...</p>
+        </div>
+    </div>
+    <div id="cameraDialog" style="display: none;">
+        <div class="dialog-content">
+            <video id="cameraFeed" autoplay></video>
+            <button onclick="captureImage()">Capture</button>
+        </div>
+    </div>
+        </div>
+     <br>
+        <!-- Right Side (Definition) -->
+        <div class="right-section">
+          <p class="prediction-container">{{ prediction }}</p>
+            <h3></h3>
+            <p><span id="definition"> Please Process the Image</span></p>
+        </div>
+    </div>
+
+   
+    <!-- Bottom Section (Causes, Controls, Treatments) -->
+    <div class="columns">
+        <div class="column">
+            <h3>Causes</h3>
+            <ul id="causes"></ul>
+        </div>
+        <div class="column">
+            <h3>Controls</h3>
+            <ul id="controls"></ul>
+        </div>
+        <div class="column">
+            <h3>Treatments</h3>
+            <ul id="treatments"></ul>
+        </div>
+    </div>
+
+</body>
+</html>

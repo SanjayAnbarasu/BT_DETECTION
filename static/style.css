@@ -1,0 +1,393 @@
+body {
+    background-image: url(/static/images/3D-Brain-Illustration.webp); /* Flask Static Path */
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+.left-section {
+    width: 70%;
+}
+
+.right-section {
+    margin: 30px;
+    border-radius: 20px;
+    background-color: wheat;
+    text-align: left; /* Align text to the right */
+    padding: 20px; /* Add some padding to keep it away from the edge */
+    width: 35%;
+}
+
+
+#subtitle{
+color: white;
+}
+
+h3, p, ul {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.1rem;
+    line-height: 1.8; /* Increase spacing between lines */
+    word-spacing: 3px; /* Increase spacing between words */
+}
+
+ul {
+    padding-right: 20px; /* Adjust spacing for better alignment */
+    list-style-position: inside; /* Keep bullet points aligned */
+    
+}
+
+
+.columns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 20px;
+    
+}
+
+.column {
+    margin: 20px;
+    border-radius: 20px;
+    background-color: wheat;
+    width: 32%;
+    text-align: left;
+    padding-right: 10px;
+    padding-left: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 1.1rem;
+    
+}
+
+.column:last-child {
+    border-right: none;
+}
+
+h3 {
+    text-decoration: underline;
+    font-size: 25px;
+    font-weight: bold;
+    color: #f51717;
+}
+.blink {
+    animation: blink 1.5s linear infinite;
+   
+    align-items: center;
+    font-size: 30px;  
+    color: red;
+    margin-bottom: 20px; /* Keep margin small */
+}
+
+
+@keyframes blink{
+    0%{
+        opacity: 1;
+    }
+    50%{
+        opacity: 0;
+    }
+   100%{
+        opacity: 1;
+    }
+}
+/* Upload Text Styling */
+#uploadText {
+    font-size: 16px;
+    font-weight: bold;
+    color: #666;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: inline-block;
+    width: auto;
+    max-width: 80%;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Change color when hovered */
+#uploadText:hover {
+    background-color: #e9ecef;
+    color: #333;
+}
+/* Form Container */
+.Maincontainer {
+    display: flex;
+    justify-content: center;
+    gap: 5px; /* Adjust gap between boxes */
+    flex-wrap: nowrap; /* Prevent wrapping */
+}
+
+/* Ensure both sections are aligned horizontally */
+.section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45%; /* Adjust width to fit both boxes */
+}
+/* Ensure both sections are aligned horizontally */
+.section-title{
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Box Styling */
+/* default: no border or margin */
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    border: none;
+    margin: 0;
+  }
+  
+  /* when there's an img inside that’s actually displayed */
+  .box:has(> img[style*="display: block"]) {
+    border: 10px solid wheat;
+    border-radius: 10px;
+  }
+  
+  
+
+/* Image Styling */
+img {
+    width: 300px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px; /* Curved edges for images */
+    display: block;
+    margin: 0 auto;
+}
+
+#loadingDialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.dialog-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Prediction Label - Always Below Image */
+.prediction-container {
+    font-size: 36px;
+    font-weight: bold;
+    color: #f51717;
+    white-space: nowrap; /* Prevents text from breaking into new lines */
+}
+
+
+/* Form Container */
+.Maincontainer {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Adjust gap between boxes */
+    flex-wrap: nowrap; /* Prevent wrapping */
+}
+
+
+/* Section Titles */
+.section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px; /* Adds spacing between title and box */
+}
+
+/* File Input Styling */
+input[type="file"] {
+    padding: 8px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+/* Custom file upload button */
+input[type="file"]::-webkit-file-upload-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Submit Button Styling */
+input[type="submit"] {
+    width: 180px; /* Icon size */
+    height: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #28a745; /* Green color */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: darkorange;
+    transform: scale(1.05);
+}
+
+input[type="submit"]:active {
+    background-color: #1e7e34;
+    transform: scale(0.98);
+}
+
+/* Container for input elements */
+.input-container {
+    margin-top: 30px;
+    margin-left: 45px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px; /* Limit max width */
+
+}
+
+/* Camera Button */
+.camera-btn {
+    background-color: orange;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Custom File Input */
+.custom-file-label {
+    width: 200px; /* Set width to 60px */
+    height: 40px; /* Adjust height for better visibility */
+    background-color: #f8f9fa;
+    color: #333;
+    padding: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #3498db; /* Green color */
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Hide default file input */
+.custom-file-label input[type="file"] {
+    display: none;
+}
+
+
+/* Submit Button */
+.submit-btn {
+    background-color: orange;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+/* Download Button */
+.download-button {
+    display: flex; /* Makes text and icon align properly */
+    align-items: center; /* Centers items vertically */
+    justify-content: center; /* Centers content horizontally */
+    height: 28px; /* Adjust height */
+    width: 160px; /* Adjust width */
+    padding: 12px 20px; /* Adjust padding */
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #28a745; /* Green color */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none; /* Removes underline */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover Effect */
+.download-button:hover {
+    background-color: darkorange;
+    transform: scale(1.05);
+}
+
+.download-button:active {
+    background-color: #1e7e34;
+    transform: scale(0.98);
+}
+
+/* Icon Styling */
+.download-button i {
+    margin-left: 10px; /* Adds spacing between text and icon */
+    padding-top: 3px; /* Moves icon slightly down */
+}
+
